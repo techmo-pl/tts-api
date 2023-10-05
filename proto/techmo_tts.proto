@@ -1,359 +1,262 @@
 // Techmo TTS API
 // version: 3.0.0
 // authors: Tomasz Jadczyk, Michal Radziszewski
-// date:    2022-05-13
+// date:    2023-08-31
 syntax = "proto3";
 
-package techmo.tts.grpc_api;
+package techmo.tts.api.v3;
 
-// Service that implements Techmo Text-To-Speech (TTS) API.
 service TTS
 {
-	// Lists all available voices which can be used to synthesize speech.
+	rpc ServiceVersion(ServiceVersionRequest) returns (ServiceVersionResponse);
+	rpc ResourcesId(ResourcesIdRequest) returns (ResourcesIdResponse);
+
 	rpc ListVoices(ListVoicesRequest) returns (ListVoicesResponse);
-
-	// Synthesizes the speech (audio signal) based on the requested phrase and the optional configuration.
-	// Returns audio signal with synthesized speech (streaming version, one or more response packets).
-	rpc SynthesizeStreaming(SynthesizeRequest) returns (stream SynthesizeResponse);
-
-	// Synthesizes the speech (audio signal) based on the requested phrase and the optional configuration.
-	// Returns audio signal with synthesized speech (non-streaming version, always one repsonse packet).
-	rpc Synthesize(SynthesizeRequest) returns (SynthesizeResponse);
-
-	// Adds a new lexicon with the requested name or overwrites the existing one if there is already a lexicon with such name.
-	rpc PutLexicon(PutLexiconRequest) returns (PutLexiconResponse);
-
-	// Removes the lexicon with the requested name.
-	rpc DeleteLexicon(DeleteLexiconRequest) returns (DeleteLexiconResponse);
-
-	// Sends back the content of the lexicon with the requested name.
-	// Returns the lexicon content.
-	rpc GetLexicon(GetLexiconRequest) returns (GetLexiconResponse);
-
-	// Lists all client-defined lexicons which can be referred by `<lexicon>` tag in synthesize requests.
-	// Returns the list of names of lexicons.
+	rpc ListSoundIcons(ListSoundIconsRequest) returns (ListSoundIconsResponse);
+	rpc ListRecordings(ListRecordingsRequest) returns (ListRecordingsResponse);
 	rpc ListLexicons(ListLexiconsRequest) returns (ListLexiconsResponse);
 
-	// Adds a new recording with the requested key for the requested voice,
-	// or overwrites the existing one if there is already such a recording defined.
+	rpc SynthesizeStreaming(SynthesizeRequest) returns (stream SynthesizeResponse);
+	rpc Synthesize(SynthesizeRequest) returns (SynthesizeResponse);
+
+	rpc GetChannelsUsage(GetChannelsUsageRequest) returns (GetChannelsUsageResponse);
+
 	rpc PutRecording(PutRecordingRequest) returns (PutRecordingResponse);
-
-	// Removes the recording with the requested key from the list of recordings of the requested voice.
 	rpc DeleteRecording(DeleteRecordingRequest) returns (DeleteRecordingResponse);
-
-	// Sends back the content of the recording with the requested key for the requested voice,
-	// data is returned in the linear PCM16 format.
 	rpc GetRecording(GetRecordingRequest) returns (GetRecordingResponse);
 
-	// Lists all recordings (their keys) for the requested voice.
-	rpc ListRecordings(ListRecordingsRequest) returns (ListRecordingsResponse);
+	rpc PutLexicon(PutLexiconRequest) returns (PutLexiconResponse);
+	rpc DeleteLexicon(DeleteLexiconRequest) returns (DeleteLexiconResponse);
+	rpc GetLexicon(GetLexiconRequest) returns (GetLexiconResponse);
 }
 
-// The top-level message sent by the client to request listing of available voices.
+message ServiceVersionRequest
+{
+}
+
+message ServiceVersionResponse
+{
+	string version = 1;
+}
+
+message ResourcesIdRequest
+{
+}
+
+message ResourcesIdResponse
+{
+	string id = 1;
+}
+
 message ListVoicesRequest
 {
-	// ISO 639-1 language code. Optional. When defined, limits the listed voices to the voices supprting the requested language.
-	string language = 1;
+	string language_code = 1;
 }
 
-// The listing of available voices returned by a `ListVoices` call.
 message ListVoicesResponse
 {
-	// The list of all available voices or voices supproting the requested laguage.
-	repeated VoiceInfo voices = 1;
-}
-
-// The top-level message sent by the client for `Synthesize` and `SynthesizeStreaming` methods.
-// It contains a text to be synthesized and a configuration.
-// The phrase to synthesize is a string in `text` field. The phrase can be either a plain text in orthographic form,
-// or a subset of SSML (https://w3.org/TR/speech-synthesis11/).
-// Consult the service documentation for the full list of supported SSML tags.
-// `SynthesizeConfig`'s fields can be set to specify parameters of synthesis (sampling rate, language, voice, etc.)
-// and a format of the output (PCM16 or Ogg/Vorbis compression).
-message SynthesizeRequest
-{
-	// Text to be synthesized.
-	string text = 1;
-
-	// Configuration.
-	SynthesizeConfig config = 2;
-}
-
-// Provides information to the synthesizer that specifies how to process the request.
-message SynthesizeConfig
-{
-	// ISO 639-1 code of the language of text to be synthesized (may be overriden by SSML tags in request text).
-	string language = 1;
-
-	// Requested voice to be used to synthesize the text (may be overriden by SSML tags in request text).
-	// If there is no voice satisfying all the required criteria,
-	// the voice is selected according to name (if defined) first, gender (if defined) second,
-	// and age (if defined) third.
-	Voice voice = 2;
-
-	// Optional. Defines the parameters of synthesized speech.
-	ProsodicProperties prosodic_properties = 3;
-
-	// Optional modifiers to the synthesizer-predicted phomemes pitch and duration.
-	repeated PhonemeModifiers phoneme_modifiers = 4;
-
-	// Optional. Overrides the default output audio properties.
-	AudioConfig audio_config = 5;
-}
-
-// Voice definition used to describe requested voice in SynthesizeConfig.
-message Voice
-{
-	// The name of the voice.
-	string name = 1;
-
-	// Gender of the voice.
-	Gender gender = 2;
-
-	// Age of the voice.
-	Age age = 3;
-
-	// Variant of the voice.
-	int32 variant = 4;
-}
-
-// Prosodic properties of the speech to be synthesized.
-message ProsodicProperties
-{
-	// The average speech pitch scaling factor. The value 1.0 is a neutral value.
-	float pitch = 1;
-
-	// The speech range scaling factor. The value 1.0 is a neutral value.
-	float range = 2;
-
-	// The speech rate (speed) scaling factor. The value 1.0 is a neutral value.
-	float rate = 3;
-
-	// The speech volume scaling factor. The value 1.0 is a neutral value.
-	float volume = 4;
-}
-
-// Modifiers for phoneme pitch and duration
-message PhonemeModifiers
-{
-	// Index of phoneme in the synthesized phrase which would be modified.
-	int32 phoneme_index = 1;
-
-	// Pitch in Hz which would override the one proposed by the synthesizer.
-	float new_pitch = 2;
-
-	// Duration in ms which would override the one proposed by the synthesizer.
-	float new_duration = 3;
-}
-
-// Defines the parameters of the output audio.
-message AudioConfig
-{
-	// Requested format of the output audio stream.
-	AudioEncoding audio_encoding = 1;
-
-	// Desired sampling frequency in Hertz of synthesized audio.
-	// The value 0 means use the default sampling rate of the service default voice.
-	int32 sampling_rate_hz = 2;
-}
-
-// Information about a voice, returned by ListVoices call.
-// Both the supported_languages and voice are always defined, i.e. non-empy.
-message VoiceInfo
-{
-	// The list of ISO 639-1 codes of laguages supported by the voice.
-	repeated string supported_languages = 1;
-
-	// The name of the voice.
-	string name = 2;
-
-	// Gender of the voice.
-	Gender gender = 3;
-
-	// Age of the voice.
-	Age age = 4;
-
-	// The number of variants of the voice (at least one).
-	int32 variants_count = 5;
-}
-
-// The requested format of the response audio data.
-enum AudioEncoding
-{
-	PCM16 = 0;       // Uncompressed 16-bit signed integer samples, without any header.
-	OGG_VORBIS = 1;  // Ogg/Vorbis endoded data stream.
-}
-
-// Gender of the voice.
-enum Gender
-{
-	GENDER_UNSPECIFIED = 0;
-	FEMALE = 1;
-	MALE = 2;
-}
-
-// Age of the voice.
-enum Age
-{
-	AGE_UNSPECIFIED = 0;
-	ADULT = 1;
-	CHILD = 2;
-	SENILE = 3;
-}
-
-// `SynthesizeResponse` is the only message returned to the client by `SynthesizeStreaming` and `Synthesize`.
-// During `SynthesizeStreaming`, a series of one or more `SynthesizeResponse` messages are streamed back to the client.
-// During `Synthesize` always one message is generated.
-message SynthesizeResponse
-{
-	// Sampling rate of the returned audio in Hertz.
 	int32 sampling_rate_hz = 1;
-
-	// Audio data bytes encoded by default as Linear PCM (uncompressed 16-bit signed little-endian samples).
-	// Using `output_format` in request it can be changed to Ogg/Vorbis encoded stream.
-	bytes audio = 2;
+	repeated VoiceInfo voices = 2;
 }
 
-// The top-level message sent by the client to put the new pronounciation lexicon.
-message PutLexiconRequest
+message ListSoundIconsRequest
 {
-	// Name of the lexicon, used as `uri` attributes of `<lexicon>` tags in synthesize requests.
-	// If there already exists a lexicon with such URI, the existing lexicon content is overwritten.
-	string name = 1;
-
-	// Content of the lexicon, shall comply to https://www.w3.org/TR/pronunciation-lexicon/.
-	string content = 2;
+	VoiceProfile voice_profile = 1;
 }
 
-// Status of the PutLexicon call.
-message PutLexiconResponse
+message ListSoundIconsResponse
 {
-	// Empty, just verify the returned GRPC status.
+	repeated string keys = 1;
 }
 
-// The top-level message sent by the client to delete the requested pronounciation lexicon.
-message DeleteLexiconRequest
+message ListRecordingsRequest
 {
-	// Name of the lexicon to delete.
-	string name = 1;
+	VoiceProfile voice_profile = 1;
 }
 
-// Status of the DeleteLexicon call.
-message DeleteLexiconResponse
+message ListRecordingsResponse
 {
-	// Empty, just verify the returned GRPC status.
+	repeated string keys = 1;
 }
 
-// The top-level message sent by the client to get the content of the requested pronounciation lexicon.
-message GetLexiconRequest
-{
-	// Name of the lexicon to list its content.
-	string name = 1;
-}
-
-// Result of the GetLexicon call.
-message GetLexiconResponse
-{
-	// If successful, contains the content of the lexicon, in SSML/XML format.
-	string content = 1;
-}
-
-// The top-level message sent by the client to obtain the list of all available lexicons.
 message ListLexiconsRequest
 {
-	// ISO 639-1 language code. Optional. When defined, limits the listed lexicons to the lexicons supprting the requested language.
-	string language = 1;
+	string language_code = 1;
 }
 
-// Result of the ListLexicons call.
 message ListLexiconsResponse
 {
-	// The list of names of all available lexicons.
-	repeated string names = 1;
+	repeated LexiconInfo lexicons = 1;
 }
 
-// The top-level message sent by the client to put the new recording for the requested voice.
+message SynthesizeRequest
+{
+	string text = 1;
+	SynthesisConfig synthesis_config = 2;
+	OutputConfig output_config = 3;
+}
+
+message SynthesizeResponse
+{
+	int32 sampling_rate_hz = 1;
+	bytes audio = 2;
+	repeated string warnings = 3;
+}
+
+message GetChannelsUsageRequest
+{
+}
+
+message GetChannelsUsageResponse
+{
+	int32 total_channels_count = 1;
+	int32 used_channels_count = 2;
+}
+
 message PutRecordingRequest
 {
-	// The voice name to put the recording for.
-	string voice_name = 1;
+	VoiceProfile voice_profile = 1;
+	string recording_key = 2;
 
-	// The variant of the voice to put the recording for.
-	int32 voice_variant = 2;
-
-	// The key of the new recording.
-	// If there already exists a recording with such key for the requested voice,
-	// the existing recording content is overwritten.
-	string recording_key = 3;
-
-	// Sampling rate of the recording audio data in Hertz.
-	int32 sampling_rate_hz = 4;
-
-	// The recording audio data, in linear PCM16 format.
-	bytes content = 5;
+	int32 sampling_rate_hz = 3;
+	bytes content = 4;
 }
 
-// Result of the PutRecording call.
 message PutRecordingResponse
 {
-	// Empty, just verify the returned GRPC status.
 }
 
-// The top-level message sent by the client to delete the requested recording of the requested voice.
 message DeleteRecordingRequest
 {
-	// The voice name to look for the recording.
-	string voice_name = 1;
-
-	// The variant of the voice to look for the recording.
-	int32 voice_variant = 2;
-
-	// The requested key of the recording (unique for any given voice).
-	string recording_key = 3;
+	VoiceProfile voice_profile = 1;
+	string recording_key = 2;
 }
 
-// Result of the DeleteRecording call.
 message DeleteRecordingResponse
 {
-	// Empty, just verify the returned GRPC status.
 }
 
-// The top-level message sent by the client to get the content of the requested recording of the requested voice.
 message GetRecordingRequest
 {
-	// The voice name to look for the recording.
-	string voice_name = 1;
-
-	// The variant of the voice to look for the recording.
-	int32 voice_variant = 2;
-
-	// The requested key of the recording (unique for any given voice).
-	string recording_key = 3;
+	VoiceProfile voice_profile = 1;
+	string recording_key = 2;
 }
 
-// Result of the GetRecording call.
 message GetRecordingResponse
 {
-	// Sampling rate of the recording audio data in Hertz.
 	int32 sampling_rate_hz = 1;
-
-	// Recording audio data, in linear PCM16 format.
 	bytes content = 2;
 }
 
-// The top-level message sent by the client to obtain the list of all available recordings for the requested voice.
-message ListRecordingsRequest
+message PutLexiconRequest
 {
-	// Name of the voice to list the recordings for.
-	string voice_name = 1;
+	string uri = 1;
 
-	// The variant of the voice to list the recordings for.
-	int32 voice_variant = 2;
+	OutsideLookupBehaviour outside_lookup_behaviour = 2;
+	string content = 3;
 }
 
-// Result of the ListRecordings call.
-message ListRecordingsResponse
+message PutLexiconResponse
 {
-	// The list of keys of all available recordings for the requested voice.
-	repeated string keys = 1;
+}
+
+message DeleteLexiconRequest
+{
+	string uri = 1;
+}
+
+message DeleteLexiconResponse
+{
+}
+
+message GetLexiconRequest
+{
+	string uri = 1;
+}
+
+message GetLexiconResponse
+{
+	OutsideLookupBehaviour outside_lookup_behaviour = 1;
+	string content = 2;
+}
+
+message VoiceProfile
+{
+	string voice_name = 1;
+	int32 voice_variant = 2;
+	string language_code = 3;
+}
+
+message SynthesisConfig
+{
+	string language_code = 1;
+	Voice voice = 2;
+	ProsodicProperties prosodic_properties = 3;
+	optional int32 silence_duration_between_segments_ms = 4;
+}
+
+message OutputConfig
+{
+	AudioEncoding audio_encoding = 1;
+	int32 sampling_rate_hz = 2;
+}
+
+message Voice
+{
+	string name = 1;
+	optional Gender gender = 2;
+	optional Age age = 3;
+	int32 variant = 4;
+}
+
+message ProsodicProperties
+{
+	float pitch = 1;
+	float range = 2;
+	float rate = 3;
+	float stress = 4;
+	float volume = 5;
+}
+
+message VoiceInfo
+{
+	repeated string supported_languages = 1;
+	string name = 2;
+	Gender gender = 3;
+	Age age = 4;
+	int32 variants_count = 5;
+}
+
+message LexiconInfo
+{
+	string uri = 1;
+	OutsideLookupBehaviour outside_lookup_behaviour = 2;
+}
+
+enum Gender
+{
+	FEMALE = 0;
+	MALE = 1;
+}
+
+enum Age
+{
+	ADULT = 0;
+	CHILD = 1;
+	SENILE = 2;
+}
+
+enum AudioEncoding
+{
+	PCM16 = 0;
+	OGG_VORBIS = 1;
+	OGG_OPUS = 2;
+	A_LAW = 3;
+	MU_LAW = 4;
+}
+
+enum OutsideLookupBehaviour
+{
+	ALLOWED = 0;
+	DISALLOWED = 1;
 }
