@@ -1,15 +1,15 @@
 // Techmo TTS API
 // version: 3.0.0
 // authors: Tomasz Jadczyk, Michal Radziszewski
-// date:    2023-08-31
+// date:    2023-10-09
 syntax = "proto3";
 
 package techmo.tts.api.v3;
 
 service TTS
 {
-	rpc ServiceVersion(ServiceVersionRequest) returns (ServiceVersionResponse);
-	rpc ResourcesId(ResourcesIdRequest) returns (ResourcesIdResponse);
+	rpc GetServiceVersion(GetServiceVersionRequest) returns (GetServiceVersionResponse);
+	rpc GetResourcesId(GetResourcesIdRequest) returns (GetResourcesIdResponse);
 
 	rpc ListVoices(ListVoicesRequest) returns (ListVoicesResponse);
 	rpc ListSoundIcons(ListSoundIconsRequest) returns (ListSoundIconsResponse);
@@ -30,20 +30,20 @@ service TTS
 	rpc GetLexicon(GetLexiconRequest) returns (GetLexiconResponse);
 }
 
-message ServiceVersionRequest
+message GetServiceVersionRequest
 {
 }
 
-message ServiceVersionResponse
+message GetServiceVersionResponse
 {
 	string version = 1;
 }
 
-message ResourcesIdRequest
+message GetResourcesIdRequest
 {
 }
 
-message ResourcesIdResponse
+message GetResourcesIdResponse
 {
 	string id = 1;
 }
