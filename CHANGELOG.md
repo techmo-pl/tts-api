@@ -6,25 +6,21 @@ For organizational reasons, the description of previous API changes (for all the
 
 ### Added
 - Handling of voice variants
-- `OGG_OPUS`, `A_LAW` and `MU_LAW` audio encodings
-- Phonemes pitch and duration control values in synthesize config
-- ServiceVersion and ResourcesId calls
-- ListSoundIcons call
-- VoiceProfile message which contains `voice_name`, `voice_variant`, and `language_code` fields
+- `VoiceProfile` message which contains `voice_name`, `voice_variant`, and `language` fields
+- `language_code` field in addition to `voice_name` and `voice_variant` for recording identification
+- `GetServiceVersion()`, `GetResourcesId()`, `GetChannelsUsage()`, and `ListSoundIcons()` calls
 - Calls for configuration of predefined recordings
-- GetChannelsUsage() cal
-- Array of warnings returned by Synthesize, SynthesizeSteaming
-- Per phoneme volume control
-- NoLookupBehaviour field in lexicons handling calls
-- Moved AudioConfig out of SynthesisConfig and renamed it to OutputConfig
-
-### Removed
-- Phoneme Modifiers array in SynthesisConfig (now should be passed as custom attributes in SSML <phoneme> tag)
+- `OGG_OPUS`, `A_LAW`, and `MU_LAW` audio encodings
+- Array of warnings returned by `Synthesize()`, `SynthesizeSteaming()`, and `ToPhonemes()`
+- `NoLookupBehaviour` field in lexicons handling calls
+- Configuration parameter for silence duration between segments
 
 ### Changed
-- change package name to techmo.tts.api.v3
-- Reorganized SynthesizeConfig message (breaking change from 2.x)
-- Simplified SynthesizeResponse message (breaking change from 2.x)
-- Separated listing requests and responses between SoundIcons and Recordings
-- gender and age in Voice are now optional
-- Moved documentation out of comments in protos to the separate file
+- Change package name to `techmo.tts.api.v3`
+- Move `AudioConfig` out of `SynthesisConfig` and renamed it to `OutputConfig`
+- `gender` and `age` in `Voice` are now optional
+- Simplify `SynthesizeResponse` message
+- Some minor renamings and clarifications
+
+### Removed
+- `GENDER_UNSPECIFIED` and `AGE_UNSPECIFIED` enumerators
