@@ -1,12 +1,13 @@
 # Techmo TTS Service API
 
+## 1. TTS GRPC API
 The service base API is defined by the proto file. The API includes functions listed below:
 
 ```
 service TTS
 {
-	rpc ServiceVersion(ServiceVersionRequest) returns (ServiceVersionResponse);
-	rpc ResourcesId(ResourcesIdRequest) returns (ResourcesIdResponse);
+	rpc GetServiceVersion(GetServiceVersionRequest) returns (GetServiceVersionResponse);
+	rpc GetResourcesId(GetResourcesIdRequest) returns (GetResourcesIdResponse);
 
 	rpc ListVoices(ListVoicesRequest) returns (ListVoicesResponse);
 	rpc ListSoundIcons(ListSoundIconsRequest) returns (ListSoundIconsResponse);
@@ -28,56 +29,56 @@ service TTS
 }
 ```
 
-## 1. Functions Definitions
+### 1.1. Functions Definitions
 
-### ServiceVersion
-*rpc ServiceVersion([ServiceVersionRequest](#serviceversionrequest)) returns ([ServiceVersionResponse](#serviceversionresponse))*
+#### GetServiceVersion
+*rpc GetServiceVersion([GetServiceVersionRequest](#getserviceversionrequest)) returns ([GetServiceVersionResponse](#getserviceversionresponse))*
 
 Returns the version of the service, in [SemVer](https://semver.org/) format.
 
-### ResourcesId
-*rpc ResourcesId([ResourcesIdRequest](#resourcesidrequest)) returns ([ResourcesIdResponse](#resourcesidresponse))*
+#### GetResourcesId
+*rpc GetResourcesId([GetResourcesIdRequest](#getresourcesidrequest)) returns ([GetResourcesIdResponse](#getresourcesidresponse))*
 
 Returns an identifier of the resources used by the service.
 
-### ListVoices
+#### ListVoices
 *rpc ListVoices([ListVoicesRequest](#listvoicesrequest)) returns ([ListVoicesResponse](#listvoicesresponse))*
 
 Lists all available voices which can be used to synthesize speech.
 
-### ListSoundIcons
+#### ListSoundIcons
 *rpc ListSoundIcons([ListSoundIconsRequest](#listsoundiconsrequest)) returns ([ListSoundIconsResponse](#listsoundiconsresponse))*
 
 Lists all sound icons (their keys) for the requested (*voice*, *variant*, *language*) tuple.
 
-### ListRecordings
+#### ListRecordings
 *rpc ListRecordings([ListRecordingsRequest](#listrecordingsrequest)) returns ([ListRecordingsResponse](#listrecordingsresponse))*
 
 Lists all recordings (their keys) for the requested (*voice*, *variant*, *language*) tuple.
 
-### ListLexicons
+#### ListLexicons
 *rpc ListLexicons([ListLexiconsRequest](#listlexiconsrequest)) returns ([ListLexiconsResponse](#listlexiconsresponse))*
 
 Lists all currently loaded lexicons which can be referred by [\<lexicon\>](https://www.w3.org/TR/speech-synthesis11/#S3.1.5.1) tag in synthesize requests.
 
-### SynthesizeStreaming
+#### SynthesizeStreaming
 *rpc SynthesizeStreaming([SynthesizeRequest](#synthesizerequest)) returns (stream [SynthesizeResponse](#synthesizeresponse))*
 
 Synthesizes the speech (audio signal) based on the requested phrase and the optional configuration.<br/>
 Returns audio signal with synthesized speech (streaming version, one or more response packets).
 
-### Synthesize
+#### Synthesize
 *rpc Synthesize([SynthesizeRequest](#synthesizerequest)) returns ([SynthesizeResponse](#synthesizeresponse))*
 
 Synthesizes the speech (audio signal) based on the requested phrase and the optional configuration.<br/>
 Returns audio signal with synthesized speech (non-streaming version, always one response packet).
 
-### GetChannelsUsage
+#### GetChannelsUsage
 *rpc GetChannelsUsage([GetChannelsUsageRequest](#getchannelsusagerequest)) returns ([GetChannelsUsageResponse](#getchannelsusageresponse))*
 
 Returns the info containing number of total available channels and channels currently in use.
 
-### PutRecording
+#### PutRecording
 *rpc PutRecording([PutRecordingRequest](#putrecordingrequest)) returns ([PutRecordingResponse](#putrecordingresponse))*
 
 Adds a new recording with the requested key for the requested voice, or overwrites the existing one if there is already such a recording defined.
@@ -85,7 +86,7 @@ Adds a new recording with the requested key for the requested voice, or overwrit
 **Note:**<br/>
 Licence must allow reconfiguration, otherwise *PERMISSION_DENIED* error is returned.
 
-### DeleteRecording
+#### DeleteRecording
 *rpc DeleteRecording([DeleteRecordingRequest](#deleterecordingrequest)) returns ([DeleteRecordingResponse](#deleterecordingresponse))*
 
 Removes the recording with the requested key from the list of recordings of the requested voice.
@@ -93,12 +94,12 @@ Removes the recording with the requested key from the list of recordings of the 
 **Note:**<br/>
 Licence must allow reconfiguration, otherwise *PERMISSION_DENIED* error is returned.
 
-### GetRecording
+#### GetRecording
 *rpc GetRecording([GetRecordingRequest](#getrecordingrequest)) returns ([GetRecordingResponse](#getrecordingresponse))*
 
 Sends back the content of the recording with the requested key for the requested voice, data is returned in the linear PCM16 format.
 
-### PutLexicon
+#### PutLexicon
 *rpc PutLexicon([PutLexiconRequest](#putlexiconrequest)) returns ([PutLexiconResponse](#putlexiconresponse))*
 
 Adds a new lexicon with the requested name or overwrites the existing one if there is already a lexicon with such name.
@@ -106,7 +107,7 @@ Adds a new lexicon with the requested name or overwrites the existing one if the
 **Note:**<br/>
 Licence must allow reconfiguration, otherwise *PERMISSION_DENIED* error is returned.
 
-### DeleteLexicon
+#### DeleteLexicon
 *rpc DeleteLexicon([DeleteLexiconRequest](#deletelexiconrequest)) returns ([DeleteLexiconResponse](#deletelexiconresponse))*
 
 Removes the lexicon with the requested name.
@@ -114,28 +115,28 @@ Removes the lexicon with the requested name.
 **Note:**<br/>
 Licence must allow reconfiguration, otherwise *PERMISSION_DENIED* error is returned.
 
-### GetLexicon
+#### GetLexicon
 *rpc GetLexicon([GetLexiconRequest](#getlexiconrequest)) returns ([GetLexiconResponse](#getlexiconresponse))*
 
 Sends back the content of the lexicon with the requested name.
 
-## 2. Requests and Responses Definitions
+### 1.2. Requests and Responses Definitions
 
-### ServiceVersionRequest
-The request message for *[ServiceVersion](#serviceversion)* function. The message is empty.
+#### GetServiceVersionRequest
+The request message for *[GetServiceVersion](#getserviceversion)* function. The message is empty.
 
-### ServiceVersionResponse
-The version info returned by *[ServiceVersion](#serviceversion)* function.
+#### GetServiceVersionResponse
+The version info returned by *[GetServiceVersion](#getserviceversion)* function.
 
 | Field     | Type     | Description |
 | --------- | -------- | ----------- |
 | *version* | *string* | Version of the sevice, in [SemVer](https://semver.org/) format. |
 
-### ResourcesIdRequest
-The request message for *[ResourcesId](#resourcesid)* function. The message is empty.
+#### GetResourcesIdRequest
+The request message for *[GetResourcesId](#getresourcesid)* function. The message is empty.
 
-### ResourcesIdResponse
-The identifier returned by *[ResourcesId](#resourcesid)* function.
+#### GetResourcesIdResponse
+The identifier returned by *[GetResourcesId](#getresourcesid)* function.
 
 | Field | Type     | Description |
 | ----- | -------- | ----------- |
@@ -143,14 +144,14 @@ The identifier returned by *[ResourcesId](#resourcesid)* function.
 
 Identifier is an free-form string, which uniquely identifies a resource pack provided with the service.
 
-### ListVoicesRequest
+#### ListVoicesRequest
 The request message for *[ListVoices](#listvoices)* function.
 
 | Field      | Type     | Description |
 | ---------- | -------- | ----------- |
 | *language_code* | *string* | [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) language code with an optional dialect.<br/>Optional. When non-empty, limits the listed voices to the voices supporting the requested language. |
 
-### ListVoicesResponse
+#### ListVoicesResponse
 The listing of available voices returned by *[ListVoices](#listvoices)* function.
 
 | Field              | Type    | Description  |
@@ -158,49 +159,49 @@ The listing of available voices returned by *[ListVoices](#listvoices)* function
 | *sampling_rate_hz* | *int32* | The sampling rate in Hz of all voices (it is identical for all available voices). |
 | *voices*           | *[VoiceInfo](#voiceinfo)* (repeated) | The list of all available voices or voices supporting the requested language. |
 
-### ListSoundIconsRequest
+#### ListSoundIconsRequest
 The request message for *[ListSoundIcons](#listsoundicons)* function.
 
 | Field           | Type | Description |
 | --------------- | ---- | ----------- |
 | *voice_profile* | *[VoiceProfile](#voiceprofile)* | Profile of the voice to list the sound icons for. |
 
-### ListSoundIconsResponse
+#### ListSoundIconsResponse
 The result of the *[ListSoundIcons](#listsoundicons)* function.
 
 | Field     | Type                | Description |
 | --------- | ------------------- | ----------- |
 | *keys*    | *string* (repeated) | The list of keys of all available sound icons for the requested voice profile. |
 
-### ListRecordingsRequest
+#### ListRecordingsRequest
 The request message for *[ListRecordings](#listrecordings)* function.
 
 | Field           | Type | Description |
 | --------------- | ---- | ----------- |
 | *voice_profile* | *[VoiceProfile](#voiceprofile)* | Profile of the voice to list the recordings for. |
 
-### ListRecordingsResponse
+#### ListRecordingsResponse
 The result of the *[ListRecordings](#listrecordings)* function.
 
 | Field     | Type                | Description |
 | --------- | ------------------- | ----------- |
 | *keys*    | *string* (repeated) | The list of keys of all available recordings for the requested voice profile. |
 
-### ListLexiconsRequest
+#### ListLexiconsRequest
 The request message for *[ListLexicons](#listlexicons)* function.
 
 | Field           | Type     | Description |
 | --------------- | -------- | ----------- |
 | *language_code* | *string* | [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) language code with an optional dialect.<br/>Optional. When non-empty, limits the listed lexicons to the lexicons supprting the requested language. |
 
-### ListLexiconsResponse
+#### ListLexiconsResponse
 The result of the *[ListLexicons](#listlexicons)* function.
 
 | Field      | Type                   | Description |
 | ---------- | ---------------------- | ----------- |
 | *lexicons* | *[LexiconInfo](#lexiconinfo)* (repeated) | The list of all available lexicons. |
 
-### SynthesizeRequest
+#### SynthesizeRequest
 The request message for *[SynthesizeStreaming](#synthesizestreaming)* and *[Synthesize](#synthesize)* functions.
 
 | Field              | Type            | Description |
@@ -215,7 +216,7 @@ Consult the service documentation for the full list of supported SSML tags.<br/>
 *synthesis_config*'s fields can be set to specify parameters of synthesis (language, voice, prosodic properties, etc.),
 and *output_config* alters the format of the output (sampling rate, PCM16 or encoding like Ogg/Vorbis compression).
 
-### SynthesizeResponse
+#### SynthesizeResponse
 The result of the *[SynthesizeStreaming](#synthesizestreaming)* and *[Synthesize](#synthesize)* functions.
 
 | Field              | Type     | Description |
@@ -223,14 +224,15 @@ The result of the *[SynthesizeStreaming](#synthesizestreaming)* and *[Synthesize
 | *sampling_rate_hz* | *int32*  | Sampling rate of the returned audio in hertz. |
 | *audio*            | *bytes*  | Audio data bytes either as Linear PCM (uncompressed 16-bit signed little-endian samples),<br/>or encoded if requested by *output_config*. |
 | *warnings*         | *string* (repeated) | All the warnings generated by the service during processing of the request. |
+| *markers*          | *[Marker](#marker)* (repeated) | All the SSML [markers](https://www.w3.org/TR/speech-synthesis11/#S3.3.2) hit by the synthesizer when processing the request. |
 
 During *[SynthesizeStreaming](#synthesizestreaming)*, a series of one or more such messages are streamed back to the caller.<br/>
 On the other hand, *[Synthesize](#synthesize)* simply returns exactly one response message.
 
-### GetChannelsUsageRequest
+#### GetChannelsUsageRequest
 The request message for *[GetChannelsUsage](#getchannelsusage)* function. The message is empty.
 
-### GetChannelsUsageResponse
+#### GetChannelsUsageResponse
 The result of the *[GetChannelsUsage](#getchannelsusage)* function.
 
 | Field                  | Type    | Description |
@@ -238,7 +240,7 @@ The result of the *[GetChannelsUsage](#getchannelsusage)* function.
 | *total_channels_count* | *int32* | The number of all available channels for the service, set by the licence.<br/>*INT_MAX* means unrestricted access. |
 | *used_channels_count*  | *int32* | The number of channels currently in use. |
 
-### PutRecordingRequest
+#### PutRecordingRequest
 The request message for *[PutRecording](#putrecording)* function.
 
 | Field              | Type     | Description |
@@ -250,10 +252,10 @@ The request message for *[PutRecording](#putrecording)* function.
 
 If there already exists a recording with such key for the requested voice profile, the existing recording content is overwritten.
 
-### PutRecordingResponse
+#### PutRecordingResponse
 The result of the *[PutRecording](#putrecording)* function. The message is empty, the response is used to verify returned GRPC status.
 
-### DeleteRecordingRequest
+#### DeleteRecordingRequest
 The request message for *[DeleteRecording](#deleterecording)* function.
 
 | Field           | Type     | Description |
@@ -261,10 +263,10 @@ The request message for *[DeleteRecording](#deleterecording)* function.
 | *voice_profile* | *[VoiceProfile](#voiceprofile)* | Profile of the voice to look for the recording. |
 | *recording_key* | *string* | The requested key of the recording (unique for any given voice profile). |
 
-### DeleteRecordingResponse
+#### DeleteRecordingResponse
 The result of the *[DeleteRecording](#deleterecording)* function. Message is empty, is used to verify returned GRPC status.
 
-### GetRecordingRequest
+#### GetRecordingRequest
 The request message for *[GetRecording](#getrecording)* function.
 
 | Field           | Type     | Description |
@@ -272,7 +274,7 @@ The request message for *[GetRecording](#getrecording)* function.
 | *voice_profile* | *[VoiceProfile](#voiceprofile)* | Profile of the voice to look for the recording. |
 | *recording_key* | *string* | The requested key of the recording (unique for any given voice profile). |
 
-### GetRecordingResponse
+#### GetRecordingResponse
 The result of the *[GetRecording](#getrecording)* function.
 
 | Field              | Type    | Description |
@@ -280,7 +282,7 @@ The result of the *[GetRecording](#getrecording)* function.
 | *sampling_rate_hz* | *int32* | Sampling rate of the recording audio data in Hertz. |
 | *content*          | *bytes* | The recording audio data, in linear PCM16 format. |
 
-### PutLexiconRequest
+#### PutLexiconRequest
 The request message for *[PutLexicon](#putlexicon)* function.
 
 | Field     | Type     | Description  |
@@ -291,27 +293,27 @@ The request message for *[PutLexicon](#putlexicon)* function.
 
 The service supports only a subset of [PLS](https://www.w3.org/TR/pronunciation-lexicon/). Consult the service documentation for the full list of supported PLS tags.
 
-### PutLexiconResponse
+#### PutLexiconResponse
 The result of the *[PutLexicon](#putlexicon)* function. Message is empty, the response is used to verify returned GRPC status.
 
-### DeleteLexiconRequest
+#### DeleteLexiconRequest
 The request message for *[DeleteLexicon](#deletelexicon)* function.
 
 | Field | Type     | Description |
 | ----- | -------- | ----------- |
 | *uri* | *string* | URI of the lexicon to delete. |
 
-### DeleteLexiconResponse
+#### DeleteLexiconResponse
 The result of the *[DeleteLexicon](#deletelexicon)* function. Message is empty, is used to verify returned GRPC status.
 
-### GetLexiconRequest
+#### GetLexiconRequest
 The request message for *[GetLexicon](#getlexicon)* function.
 
 | Field | Type     | Description |
 | ----- | -------- | ----------- |
 | *uri* | *string* | URI of the lexicon to list its content. |
 
-### GetLexiconResponse
+#### GetLexiconResponse
 The result of the *[GetLexicon](#getlexicon)* function.
 
 | Field  | Type       | Description |
@@ -319,7 +321,7 @@ The result of the *[GetLexicon](#getlexicon)* function.
 | *outside_lookup_behaviour* | *[OutsideLookupBehaviour](#outsidelookupbehaviour)* | Can lexicon be selected for phrases outside of [\<lookup\>](https://www.w3.org/TR/speech-synthesis11/#S3.1.5.2) SSML tags. |
 | *content* | *string* | If successful, contains the content of the lexicon, in [PLS](https://www.w3.org/TR/pronunciation-lexicon/) format. |
 
-### VoiceProfile
+#### VoiceProfile
 Provides information about voice, its variant, and language code as a selector for set of sound icons and predefined recordings.
 
 | Field           | Type     | Description |
@@ -328,7 +330,15 @@ Provides information about voice, its variant, and language code as a selector f
 | *voice_variant* | *int32*  | The variant of the voice to look for the recording. |
 | *language_code* | *string* | [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) language code with an optional dialect to look for the recording. |
 
-### SynthesisConfig
+#### Marker
+Provides information about SSML [markers](https://www.w3.org/TR/speech-synthesis11/#S3.3.2) hit by the synthesizer when processing the request.
+
+| Field      | Type     | Description |
+| ---------- | -------- | ----------- |
+| *position* | *int32*  | Position in samples of uncompressed *[SynthesizeResponse](#synthesizeresponse)* *audio* where the [\<mark\>](https://www.w3.org/TR/speech-synthesis11/#S3.3.2) tag has been hit. |
+| *name*     | *string* | A *name* attribute of the hit mark tag. |
+
+#### SynthesisConfig
 Provides information to the synthesizer that specifies how to process the request.
 
 | Field               | Type              | Description  |
@@ -340,15 +350,22 @@ Provides information to the synthesizer that specifies how to process the reques
 
 If there is no voice satisfying all the required criteria defined by the *voice* field, the voice is selected according to *name* (if defined) first, *gender* (if defined) second, and *age* (if defined) third.
 
-### OutputConfig
+#### OutputConfig
 Defines the parameters of the output audio.
 
 | Field              | Type    | Description |
 | ------------------ | ------- | ----------- |
 | *audio_encoding*   | *[AudioEncoding](#audioencoding)* | Requested format of the output audio stream. |
 | *sampling_rate_hz* | *int32* | Desired sampling frequency in Hertz of synthesized audio. The value 0 means use the default Synthesizer sampling rate. |
+| *max_frame_size*   | *int32* | Maximum frame size sent at once to the client to enable *RTF Throttling* (default=0, throttling disabled). |
 
-### Voice
+When RTF Throttling is enabled, the RTF (**R**eal **T**ime **F**actor) is throttled to 1.0, with one frame (with *max_frame_size* size) sent in advance.
+The frame size is expressed in samples, regardless of *audio_encoding* used (frame size expressed in bytes would likely be far smaller if output is not *PCM16*).
+Enabling RTF Throttling guarantees that when connection is interrupted, the respective channel is freed after time no longer than the playback time of a one frame.
+
+RTF Throttling is effective only for *[TTS::SynthesizeStreaming](#synthesizestreaming)* calls. It is silently ignored for *[TTS::Synthesize](#synthesize)* calls.
+
+#### Voice
 Voice definition used to describe requested voice in *[SynthesisConfig](#synthesisconfig)*.
 
 | Field     | Type     | Description            |
@@ -358,7 +375,7 @@ Voice definition used to describe requested voice in *[SynthesisConfig](#synthes
 | *age*     | *[Age](#age)* (optional) | Age of the voice. If not set, it is not taken into account in voice selection. |
 | *variant* | *int32*  | Variant of the voice. |
 
-### ProsodicProperties
+#### ProsodicProperties
 Prosodic properties of the speech to be synthesized.
 
 | Field    | Type    | Description |
@@ -369,7 +386,7 @@ Prosodic properties of the speech to be synthesized.
 | *stress* | *float* | The speech stress scaling factor. The value 1.0 is a neutral value. |
 | *volume* | *float* | The speech volume scaling factor. The value 1.0 is a neutral value. |
 
-### VoiceInfo
+#### VoiceInfo
 Information about a voice, returned by *[ListVoices](#listvoices)* function.
 
 | Field                 | Type | Description |
@@ -380,7 +397,7 @@ Information about a voice, returned by *[ListVoices](#listvoices)* function.
 | *age*                 | *[Age](#age)* | Age of the voice. |
 | *variants_count*      | *int32* | The number of variants of the voice (at least one). |
 
-### LexiconInfo
+#### LexiconInfo
 Lexicon uri and behaviour outside lookup tags returned by *[ListLexicons](#listlexicons)* function.
 
 | Field                      | Type     | Description |
@@ -388,9 +405,9 @@ Lexicon uri and behaviour outside lookup tags returned by *[ListLexicons](#listl
 | *uri*                      | *string* | URI of the lexicon, used as *uri* attributes of [\<lexicon\>](https://www.w3.org/TR/speech-synthesis11/#S3.1.5.1) tags in synthesize requests. |
 | *outside_lookup_behaviour* | *[OutsideLookupBehaviour](#outsidelookupbehaviour)* | Can lexicon be selected for phrases outside of [\<lookup\>](https://www.w3.org/TR/speech-synthesis11/#S3.1.5.2) SSML tags. |
 
-## 3. Enumerations
+### 1.3. Enumerations
 
-### Gender
+#### Gender
 Enum type, indicates the gender of the voice.
 
 | Name     | Number |
@@ -398,7 +415,7 @@ Enum type, indicates the gender of the voice.
 | *FEMALE* | 0      |
 | *MALE*   | 1      |
 
-### Age
+#### Age
 Enum type, indicates the age of the voice.
 
 | Name     | Number | Description |
@@ -407,7 +424,7 @@ Enum type, indicates the age of the voice.
 | *CHILD*  | 1      | Selected for [SSML](https://www.w3.org/TR/speech-synthesis11/#S3.2.1) *age* attribute in range \[0 - 16\]. |
 | *SENILE* | 2      | Selected for [SSML](https://www.w3.org/TR/speech-synthesis11/#S3.2.1) *age* attribute in range (60 - *inf*). |
 
-### AudioEncoding
+#### AudioEncoding
 Enum type, indicates the requested format of the response audio data.
 
 | Name         | Number | Description |
@@ -421,10 +438,111 @@ Enum type, indicates the requested format of the response audio data.
 **Note:**<br/>
 When using Ogg/Opus encoding, only 8kHz, 12kHz, 16kHz, 24kHz, and 48kHz sampling rates are allowed.
 
-### OutsideLookupBehaviour
+#### OutsideLookupBehaviour
 Enum type, indicates if is lexicon allowed to be matched even for phrases outside of [\<lookup\>](https://www.w3.org/TR/speech-synthesis11/#S3.1.5.2) SSML tags.
 
 | Name         | Number |
 | ------------ | ------ |
 | *ALLOWED*    | 0      |
 | *DISALLOWED* | 1      |
+
+## 2. TTS Ex GRPC API
+The service extended API is defined by the proto file. The API includes functions listed below:
+
+```
+service TTS_EX
+{
+	rpc ToPhonemes(ToPhonemesRequest) returns (ToPhonemesResponse);
+}
+```
+
+### 2.1. Functions Definitions
+
+#### ToPhonemes
+*rpc ToPhonemes([ToPhonemesRequest](#tophonemesrequest)) returns ([ToPhonemesResponse](#tophonemesresponse))*
+
+Transforms the requested phrase to an array of segments, with text segments transformed to phonemes in an [IPA](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet) notation.
+
+### 2.2. Requests and Responses Definitions
+
+#### ToPhonemesRequest
+The request message for *[ToPhonemes](#tophonemes)* function.
+
+| Field    | Type            | Description |
+| -------- | --------------- | ----------- |
+| *text*   | *string*        | Text to be synthesized. |
+| *config* | *[TTS::SynthesisConfig](#synthesisconfig)* | Configuration. |
+
+The meaning of *text* and *config* fields are identical as in respective fields of *[SynthesizeRequest](#synthesizerequest)*.
+
+#### ToPhonemesResponse
+The result of the *[ToPhonemes](#tophonemes)* function.
+
+| Field      | Type               | Description |
+| ---------- | ------------------ | ----------- |
+| *segments* | *[Segment](#segment)* (repeated) | The array of segments produced from processing the request text. |
+| *warnings* | *string* (repeated) | All the warnings generated by the service during processing of the request. |
+
+Service guarantees that identical segments would be synthesized if *[TTS::SynthesizeStreaming](#synthesizestreaming)* or *[TTS::Synthesize](#synthesize)* is called instead of *[ToPhonemes](#tophonemes)*.
+
+#### Segment
+One of segments returned by the *[ToPhonemes](#tophonemes)* function.
+
+| Field              | Type                    | Description |
+| ------------------ | ----------------------- | ----------- |
+| *segment_phonetic* | *[SegmentPhonetic](#segmentphonetic)* (oneof) | Returned if synthesis would synthesize this text. |
+| *segment_audio*    | *[SegmentAudio](#segmentaudio)* (oneof) | Returned if audio recording would be inserted. |
+| *segment_break*    | *[SegmentBreak](#segmentbreak)* (oneof) | Returned if silence due to [\<break\>](https://www.w3.org/TR/speech-synthesis11/#S3.2.3) tag would be inserted. |
+| *segment_marker*    | *[SegmentMarker](#segmentmarker)* (oneof) | Returned if [\<mark\>](https://www.w3.org/TR/speech-synthesis11/#S3.3.2) tag would be hit. |
+
+#### SegmentPhonetic
+Phonemes of a phonetic segment returned by the *[ToPhonemes](#tophonemes)* function.
+
+| Field             | Type         | Description |
+| ----------------- | ------------ | ----------- |
+| *voice_profile*   | *[TTS::VoiceProfile](#voiceprofile)* | Profile of the voice used to synthesize the segment. |
+| *normalized_text* | *string*     | If possible, the request text after lexicon substitution and normalization processes.<br/>Otherwise (if request contains phonetic fragments), the *normalized_text* is empty. |
+| *phonemes*        | *[PhonemeData](#phonemedata)* (repeated) | The array of phonemes in an [IPA](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet) notation with prosodic properties. |
+| *silence_duration_ms* | *float*  | Silence duration in ms between consecutive segments (may be zero). |
+
+The content of *phonemes* array would be synthesized if the same *text* is an argument of *[TTS::SynthesizeStreaming](#synthesizestreaming)* or *[TTS::Synthesize](#synthesize)*.
+
+#### SegmentAudio
+Segment generated by encountering an [\<audio\>](https://www.w3.org/TR/speech-synthesis11/#S3.3.1) tag or matching the predefined audio phrase.
+
+| Field               | Type     | Description |
+| ------------------- | -------- | ----------- |
+| *voice_profile*     | *[TTS::VoiceProfile](#voiceprofile)* | Profile of the voice to look for the recording. |
+| *source*            | *string* | URI of the audio recording or an empty string if the segment is actually a predefined phrase. |
+| *phrase*            | *string* | Predefined audio phrase (in an [IPA](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet) notation) or an empty string if the segment is generated by an [\<audio\>](https://www.w3.org/TR/speech-synthesis11/#S3.3.1) tag. |
+| *clip_begin_ms*     | *float* (optional) | Optional properties of the audio recording defined by the audio tag. |
+| *clip_end_ms*       | *float* (optional) | Optional properties of the audio recording defined by the audio tag. |
+| *audio_duration_ms* | *float*  | Total duration of the audio segment in ms (zero if the audio file could not be fetched). |
+| *pitch_scale*       | *float*  | Pitch scale of the audio recording (1 if not modified by SSML or request parameters). |
+| *volume_scale*      | *float*  | Volume scale of the audio recording (1 if not modified by SSML or request parameters). |
+
+#### SegmentBreak
+Segment generated by encountering a [\<break\>](https://www.w3.org/TR/speech-synthesis11/#S3.2.3) tag with *strength* other than *none* or *time* other than 0.
+
+| Field           | Type    | Description |
+| --------------- | ------- | ----------- |
+| *break_time_ms* | *float* | Time of silence in milliseconds. |
+
+#### SegmentMarker
+Segment generated by encountering a [\<mark\>](https://www.w3.org/TR/speech-synthesis11/#S3.3.2) tag.
+
+| Field  | Type     | Description |
+| ------ | -------- | ----------- |
+| *name* | *string* | A *name* attribute of the hit mark tag. |
+
+
+#### PhonemeData
+Describes phoneme returned from the *[ToPhonemes](#tophonemes)* function.
+
+| Field          | Type     | Description |
+| -------------- | -------- | ----------- |
+| *ipa_code*     | *string* | Phoneme code in an [IPA](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet) notation. |
+| *pitch_hz*     | *float*  | Pitch in Hz proposed by the synthesizer. |
+| *stress*       | *float*  | Stress (unitless) proposed by the synthesizer. |
+| *duration_ms*  | *float*  | Phoneme duration in ms proposed by the synthesizer. |
+| *volume_scale* | *float*  | Multiplier to the waveform, controlled per phoneme. |
