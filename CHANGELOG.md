@@ -3,7 +3,7 @@
 For organizational reasons, the description of previous API changes (for all the versions below 3.0.0) can be found in a separate repository: https://github.com/techmo-pl/tts-client
 
 
-## [3.2.1] - 2026-03-30
+## [3.2.0+1] - 2026-03-30
 
 ### Added
 - `AGENTS.md`: AI assistant context document describing the repo layout, gRPC service RPC table, versioning conventions, and downstream consumers.
