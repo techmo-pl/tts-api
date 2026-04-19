@@ -3,6 +3,12 @@
 For organizational reasons, the description of previous API changes (for all the versions below 3.0.0) can be found in a separate repository: https://github.com/techmo-pl/tts-client
 
 
+## [3.2.0+2] - 2026-04-19
+
+### Added
+- `CLAUDE.md`: one-line redirect to `AGENTS.md` for AI coding agents that auto-load `CLAUDE.md` (Claude Code, Codex, Cursor, Aider).
+
+
 ## [3.2.0+1] - 2026-03-30
 
 ### Added
